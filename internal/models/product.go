@@ -20,3 +20,8 @@ type Search struct {
 	Prod_name  string `form:"product_name" uri:"product_name"`
 	SortBy_Typ string `form:"sortBy_productType" uri:"sortBy_productType"`
 }
+
+type Page struct {
+	Page  string `form:"page" uri:"page"`
+	Limit string `form:"limit" uri:"limit"`
+}

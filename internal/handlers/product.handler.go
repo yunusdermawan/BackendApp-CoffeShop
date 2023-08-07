@@ -37,11 +37,6 @@ func (h *HandlerProduct) DeleteData(ctx *gin.Context) {
 	var product models.Product
 	product.Slg_prod = ctx.Param("slug")
 
-	// if err := ctx.ShouldBind(&product); err != nil {
-	// 	ctx.AbortWithError(http.StatusBadRequest, err)
-	// 	return
-	// }
-
 	response, err := h.DeleteProduct(&product)
 
 	if err != nil {
@@ -79,6 +74,24 @@ func (h *HandlerProduct) SearchData(ctx *gin.Context) {
 	}
 
 	response, err := h.SearchProduct(&search)
+
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx.JSON(200, response)
+}
+
+func (h *HandlerProduct) GetByPage(ctx *gin.Context) {
+	var page models.Page
+
+	if err := ctx.ShouldBindQuery(&page); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	response, err := h.GetProductByPage(&page)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

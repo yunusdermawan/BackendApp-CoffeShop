@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"gogin/internal/models"
+	"strconv"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -93,6 +94,35 @@ func (r *RepoProduct) SearchProduct(search *models.Search) ([]models.Product, er
 	src := "%" + search.Prod_name + "%"
 	typ := search.SortBy_Typ
 	err := r.DB.Select(&products, q, src, typ)
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}
+
+func (r *RepoProduct) GetProductByPage(page *models.Page) ([]models.Product, error) {
+	var products []models.Product
+
+	pageInt, err := strconv.Atoi(page.Page)
+	if err != nil || pageInt <= 0 {
+		pageInt = 1
+	}
+
+	pageSizeInt, err := strconv.Atoi(page.Limit)
+	if err != nil || pageSizeInt <= 0 {
+		pageSizeInt = 5
+	}
+
+	offset := (pageInt - 1) * pageSizeInt
+
+	q := `
+		SELECT *
+		FROM public.product
+		LIMIT $1 OFFSET $2;
+	`
+
+	err = r.DB.Select(&products, q, pageSizeInt, offset)
 	if err != nil {
 		return nil, err
 	}

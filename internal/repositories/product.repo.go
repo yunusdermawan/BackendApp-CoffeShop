@@ -80,6 +80,26 @@ func (r *RepoProduct) GetProduct(data *models.Product) ([]models.Product, error)
 	return products, nil
 }
 
+func (r *RepoProduct) SearchProduct(search *models.Search) ([]models.Product, error) {
+	var products []models.Product
+
+	q := `
+		SELECT *
+		FROM public.product
+		WHERE product_name LIKE $1
+		AND product_type = $2;
+	`
+
+	src := "%" + search.Prod_name + "%"
+	typ := search.SortBy_Typ
+	err := r.DB.Select(&products, q, src, typ)
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}
+
 func (r *RepoProduct) UpdateProduct(data *models.Product) (string, error) {
 	q := `
 		UPDATE public.product

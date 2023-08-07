@@ -13,5 +13,10 @@ type Product struct {
 	Crt_at    *time.Time `db:"created_at" json:"created_at"`
 	Upd_at    *time.Time `db:"updated_at" json:"updated_at"`
 	Is_fav    bool       `db:"is_favorite" form:"is_favorite" json:"is_favorite"`
-	Prod_tp   *string    `db:"product_type" form:"product_type" json:"product_type"`
+	Prod_tp   string     `db:"product_type" form:"product_type" json:"product_type"`
+}
+
+type Search struct {
+	Prod_name  string `form:"product_name" uri:"product_name"`
+	SortBy_Typ string `form:"sortBy_productType" uri:"sortBy_productType"`
 }

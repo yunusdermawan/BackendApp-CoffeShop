@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"gogin/internal/models"
+	"gogin/static"
 	"strconv"
 
 	"github.com/jmoiron/sqlx"
@@ -46,15 +47,17 @@ func (r *RepoProduct) CreateProduct(data *models.Product) (string, error) {
 	return "1 data product created", nil
 }
 
-func (r *RepoProduct) DeleteProduct(data *models.Product) (string, error) {
+func (r *RepoProduct) DeleteProduct(data *models.Product) (map[string]interface{}, error) {
 	q := `DELETE FROM public.product WHERE slug_product = :slug_product;`
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return "1 product deleted", nil
+	customStat := static.Response(200, "1 product deleted")
+
+	return customStat, nil
 }
 
 func (r *RepoProduct) GetProduct(data *models.Product) ([]models.Product, error) {
@@ -81,7 +84,7 @@ func (r *RepoProduct) GetProduct(data *models.Product) ([]models.Product, error)
 	return products, nil
 }
 
-func (r *RepoProduct) SearchProduct(search *models.Search) ([]models.Product, error) {
+func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface, error) {
 	var products []models.Product
 
 	q := `
@@ -98,7 +101,8 @@ func (r *RepoProduct) SearchProduct(search *models.Search) ([]models.Product, er
 		return nil, err
 	}
 
-	return products, nil
+	customStat := static.Response(200, products)
+	return customStat, nil
 }
 
 func (r *RepoProduct) GetProductByPage(page *models.Page) ([]models.Product, error) {

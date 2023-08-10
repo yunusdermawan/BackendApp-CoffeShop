@@ -3,6 +3,7 @@ package handlers
 import (
 	"gogin/internal/models"
 	"gogin/internal/repositories"
+	"gogin/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -48,21 +49,13 @@ func (h *HandlerProduct) DeleteData(ctx *gin.Context) {
 }
 
 func (h *HandlerProduct) GetData(ctx *gin.Context) {
-	var product models.Product
-
-	if err := ctx.ShouldBind(&product); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-
-	response, err := h.GetProduct(&product)
-
+	data, err := h.GetProduct()
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	ctx.JSON(200, response)
+	pkg.NewRes(200, data).Send(ctx)
 }
 
 func (h *HandlerProduct) SearchData(ctx *gin.Context) {

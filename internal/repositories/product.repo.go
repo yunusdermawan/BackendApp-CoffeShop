@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"gogin/config"
 	"gogin/internal/models"
 	"gogin/static"
 	"strconv"
@@ -60,20 +61,12 @@ func (r *RepoProduct) DeleteProduct(data *models.Product) (map[string]interface{
 	return customStat, nil
 }
 
-func (r *RepoProduct) GetProduct(data *models.Product) ([]models.Product, error) {
-	var products []models.Product
-
+func (r *RepoProduct) GetProduct() (*config.Result, error) {
+	products := models.Product{}
 	q := `
-		SELECT 
-			id_product,
-			product_name,
-			product_banner,
-			product_price,
-			product_size,
-			product_description,
-			is_favorite,
-			product_type
-		FROM public.product;
+		SELECT *
+		FROM public.product
+		ORDER BY created_at DESC;
 	`
 
 	err := r.DB.Select(&products, q)
@@ -81,27 +74,27 @@ func (r *RepoProduct) GetProduct(data *models.Product) ([]models.Product, error)
 		return nil, err
 	}
 
-	return products, nil
+	return &config.Result{Data: products}, nil
 }
 
-func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface, error) {
-	var products []models.Product
+func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface{}, error) {
+	// var products []models.Product
 
-	q := `
-		SELECT *
-		FROM public.product
-		WHERE product_name LIKE $1
-		AND product_type = $2;
-	`
+	// q := `
+	// 	SELECT *
+	// 	FROM public.product
+	// 	WHERE product_name LIKE $1
+	// 	AND product_type = $2;
+	// `
 
-	src := "%" + search.Prod_name + "%"
-	typ := search.SortBy_Typ
-	err := r.DB.Select(&products, q, src, typ)
-	if err != nil {
-		return nil, err
-	}
+	// src := "%" + search.Prod_name + "%"
+	// typ := search.SortBy_Typ
+	// err := r.DB.Select(&products, q, src, typ)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	customStat := static.Response(200, products)
+	customStat := static.Response(200, "products")
 	return customStat, nil
 }
 

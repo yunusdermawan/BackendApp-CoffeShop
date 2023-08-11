@@ -3,28 +3,37 @@ package handlers
 import (
 	"gogin/internal/models"
 	"gogin/internal/repositories"
+	"gogin/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type HandlerProduct struct {
-	*repositories.RepoProduct
+type HandlerUser struct {
+	*repositories.RepoUser
 }
 
-func NewProduct(r *repositories.RepoProduct) *HandlerProduct {
-	return &HandlerProduct{r}
+func NewUser(r *repositories.RepoUser) *HandlerUser {
+	return &HandlerUser{r}
 }
 
-func (h *HandlerProduct) CreateData(ctx *gin.Context) {
-	var product models.Product
+func (h *HandlerUser) CreateData(ctx *gin.Context) {
+	var users models.User
+	var ers error
 
-	if err := ctx.ShouldBind(&product); err != nil {
+	if err := ctx.ShouldBind(&users); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	response, err := h.CreateProduct(&product)
+	users.User_password, ers = pkg.HashPassword(users.User_password)
+
+	if ers != nil {
+		ctx.AbortWithError(http.StatusBadRequest, ers)
+		return
+	}
+
+	response, err := h.CreateUser(&users)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -33,11 +42,11 @@ func (h *HandlerProduct) CreateData(ctx *gin.Context) {
 	ctx.JSON(200, response)
 }
 
-func (h *HandlerProduct) DeleteData(ctx *gin.Context) {
-	var product models.Product
-	product.Slg_prod = ctx.Param("slug")
+func (h *HandlerUser) DeleteData(ctx *gin.Context) {
+	var users models.User
+	users.Id_user = ctx.Param("id_user")
 
-	response, err := h.DeleteProduct(&product)
+	response, err := h.DeleteUser(&users)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -47,8 +56,8 @@ func (h *HandlerProduct) DeleteData(ctx *gin.Context) {
 	ctx.JSON(200, response)
 }
 
-func (h *HandlerProduct) GetData(ctx *gin.Context) {
-	data, err := h.GetProduct()
+func (h *HandlerUser) GetData(ctx *gin.Context) {
+	data, err := h.GetUser()
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -58,7 +67,7 @@ func (h *HandlerProduct) GetData(ctx *gin.Context) {
 	ctx.JSON(200, data)
 }
 
-func (h *HandlerProduct) SearchData(ctx *gin.Context) {
+func (h *HandlerUser) SearchData(ctx *gin.Context) {
 	var search models.Search
 
 	if err := ctx.ShouldBindQuery(&search); err != nil {
@@ -66,7 +75,7 @@ func (h *HandlerProduct) SearchData(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.SearchProduct(&search)
+	response, err := h.SearchUser(&search)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -76,7 +85,7 @@ func (h *HandlerProduct) SearchData(ctx *gin.Context) {
 	ctx.JSON(200, response)
 }
 
-func (h *HandlerProduct) GetByPage(ctx *gin.Context) {
+func (h *HandlerUser) GetByPage(ctx *gin.Context) {
 	var page models.Page
 
 	if err := ctx.ShouldBindQuery(&page); err != nil {
@@ -84,7 +93,7 @@ func (h *HandlerProduct) GetByPage(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.GetProductByPage(&page)
+	response, err := h.GetUserByPage(&page)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -94,16 +103,16 @@ func (h *HandlerProduct) GetByPage(ctx *gin.Context) {
 	ctx.JSON(200, response)
 }
 
-func (h *HandlerProduct) UpdateData(ctx *gin.Context) {
-	var product models.Product
+func (h *HandlerUser) UpdateData(ctx *gin.Context) {
+	var users models.User
 
-	if err := ctx.ShouldBind(&product); err != nil {
+	if err := ctx.ShouldBind(&users); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	product.Slg_prod = ctx.Param("slug")
-	response, err := h.UpdateProduct(&product)
+	users.Id_user = ctx.Param("id_user")
+	response, err := h.UpdateUser(&users)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

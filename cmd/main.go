@@ -6,8 +6,13 @@ import (
 	"gogin/pkg"
 	"log"
 
+	"github.com/asaskevich/govalidator"
 	_ "github.com/joho/godotenv/autoload"
 )
+
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
 
 func main() {
 	database, err := pkg.Pgdb()

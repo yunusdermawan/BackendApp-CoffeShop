@@ -79,21 +79,21 @@ func (r *RepoProduct) GetProduct() ([]models.Product, error) {
 }
 
 func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface{}, error) {
-	// var products []models.Product
+	var products []models.Product
 
-	// q := `
-	// 	SELECT *
-	// 	FROM public.product
-	// 	WHERE product_name LIKE $1
-	// 	AND product_type = $2;
-	// `
+	q := `
+		SELECT *
+		FROM public.product
+		WHERE product_name LIKE $1
+		AND product_type = $2;
+	`
 
-	// src := "%" + search.Prod_name + "%"
-	// typ := search.SortBy_Typ
-	// err := r.DB.Select(&products, q, src, typ)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	src := "%" + search.Prod_name + "%"
+	typ := search.SortBy_Typ
+	err := r.DB.Select(&products, q, src, typ)
+	if err != nil {
+		return nil, err
+	}
 
 	customStat := static.Response(200, "products")
 	return customStat, nil

@@ -16,9 +16,8 @@ func user(g *gin.Engine, d *sqlx.DB) {
 
 	route.POST("/", handler.CreateData)
 	route.GET("/all", handler.GetData)
-	route.GET("/", handler.GetByPage)
 	route.GET("/search", handler.SearchData)
-	route.PATCH("/:slug", handler.UpdateData)
-	route.DELETE("/:slug", handler.DeleteData)
+	route.PATCH("/:id_user", handler.UpdateData)
+	route.DELETE("/:id_user", handler.DeleteData)
 
 }

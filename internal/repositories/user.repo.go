@@ -3,7 +3,6 @@ package repositories
 import (
 	"gogin/internal/models"
 	"gogin/static"
-	"strconv"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -77,8 +76,8 @@ func (r *RepoUser) SearchUser(search *models.Search) (map[string]interface{}, er
 	// q := `
 	// 	SELECT *
 	// 	FROM public.user
-	// 	WHERE product_name LIKE $1
-	// 	AND product_type = $2;
+	// 	WHERE user_name LIKE $1
+	// 	AND first_name = $2;
 	// `
 
 	// src := "%" + search.Prod_name + "%"
@@ -92,50 +91,21 @@ func (r *RepoUser) SearchUser(search *models.Search) (map[string]interface{}, er
 	return customStat, nil
 }
 
-func (r *RepoUser) GetUserByPage(page *models.Page) ([]models.User, error) {
-	var users []models.User
-
-	pageInt, err := strconv.Atoi(page.Page)
-	if err != nil || pageInt <= 0 {
-		pageInt = 1
-	}
-
-	pageSizeInt, err := strconv.Atoi(page.Limit)
-	if err != nil || pageSizeInt <= 0 {
-		pageSizeInt = 5
-	}
-
-	offset := (pageInt - 1) * pageSizeInt
-
-	q := `
-		SELECT *
-		FROM public.user
-		LIMIT $1 OFFSET $2;
-	`
-
-	err = r.DB.Select(&users, q, pageSizeInt, offset)
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
-}
-
 func (r *RepoUser) UpdateUser(data *models.User) (string, error) {
 	q := `
 		UPDATE public.user
 		SET
-			user_name=:user_name,
-			first_name=:first_name,
-			last_name=:last_name,
-			user_password:user_password,
-			user_gender=:user_gender,
-			user_banner=:user_banner,
-			user_email=:user_email,
-			user_phone=:user_phone,
-			user_address=:user_address,
-			user_dob=:user_dob,
-			role=:role
+			user_name = :user_name,
+			first_name = :first_name,
+			last_name = :last_name,
+			user_password = :user_password,
+			user_gender = :user_gender,
+			user_banner = :user_banner,
+			user_email = :user_email,
+			user_phone = :user_phone,
+			user_address = :user_address,
+			user_dob = :user_dob,
+			role = :role
 		WHERE id_user = :id_user;
 	`
 

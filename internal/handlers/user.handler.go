@@ -6,6 +6,7 @@ import (
 	"gogin/pkg"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +27,15 @@ func (h *HandlerUser) CreateData(ctx *gin.Context) {
 		return
 	}
 
-	users.User_password, ers = pkg.HashPassword(users.User_password)
+	//Payload validation
+	_, ers = govalidator.ValidateStruct(&users)
+	if ers != nil {
+		ctx.AbortWithError(http.StatusBadRequest, ers)
+		return
+	}
 
+	//Hash password
+	users.User_password, ers = pkg.HashPassword(users.User_password)
 	if ers != nil {
 		ctx.AbortWithError(http.StatusBadRequest, ers)
 		return
@@ -76,24 +84,6 @@ func (h *HandlerUser) SearchData(ctx *gin.Context) {
 	}
 
 	response, err := h.SearchUser(&search)
-
-	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-
-	ctx.JSON(200, response)
-}
-
-func (h *HandlerUser) GetByPage(ctx *gin.Context) {
-	var page models.Page
-
-	if err := ctx.ShouldBindQuery(&page); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-
-	response, err := h.GetUserByPage(&page)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

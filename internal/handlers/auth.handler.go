@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"gogin/config"
 	"gogin/internal/repositories"
 	"gogin/pkg"
 	"net/http"
@@ -10,8 +9,8 @@ import (
 )
 
 type User struct {
-	Username string `db:"username" json:"username" form:"username"`
-	Password string `db:"password" json:"password,omitempty"`
+	User_name     string `db:"user_name" json:"user_name" form:"user_name"`
+	User_password string `db:"user_password" json:"user_password,omitempty"`
 }
 
 type HandlerAuth struct {
@@ -36,7 +35,7 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 		return
 	}
 
-	users, err := h.GetAuthData(data.Username)
+	users, err := h.GetAuthData(data.User_name)
 	// if err != nil {
 	// 	pkg.NewRes(401, &config.Result{
 	// 		Data: err.Error(),
@@ -54,12 +53,12 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 	// 	}).Send(ctx)
 	// 	return
 	// }
-	if err := pkg.VerifyPassword(hashedPassword, plainPassword)(users.Password, data.Password); err != nil {
+	if err := pkg.VerifyPassword(users.User_password, data.User_password); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	jwtt := pkg.NewToken(users.User_id, users.Role)
+	jwtt := pkg.NewToken(users.Id_user, users.Role)
 	tokens, err := jwtt.Generate()
 	// if err != nil {
 	// 	pkg.NewRes(500, &config.Result{
@@ -72,5 +71,6 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 		return
 	}
 
-	pkg.NewRes(200, &config.Result{Data: tokens}).Send(ctx)
+	// pkg.NewRes(200, &config.Result{Data: tokens}).Send(ctx)
+	ctx.JSON(200, tokens)
 }

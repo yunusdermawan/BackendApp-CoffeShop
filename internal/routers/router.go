@@ -10,6 +10,7 @@ func New(db *sqlx.DB) *gin.Engine {
 
 	product(router, db)
 	user(router, db)
+	auth(router, db)
 
 	return router
 }

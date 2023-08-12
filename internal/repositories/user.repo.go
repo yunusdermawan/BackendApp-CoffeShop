@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"gogin/internal/models"
 	"gogin/static"
 
@@ -123,7 +124,7 @@ func (r *RepoUser) GetAuthData(user string) (*models.User, error) {
 
 	if err := r.Get(&result, r.Rebind(q), user); err != nil {
 		if err.Error() == "sql: no rows in result set" {
-			return nil, err
+			return nil, errors.New("username not found")
 		}
 
 		return nil, err

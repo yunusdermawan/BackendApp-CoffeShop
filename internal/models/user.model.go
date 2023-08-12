@@ -20,3 +20,5 @@ type User struct {
 	Upd_at        *time.Time `db:"updated_at" json:"updated_at" valid:"-"`
 	Role          string     `db:"role" form:"role" json:"role" valid:"type(string)"`
 }
+
+type Users []User

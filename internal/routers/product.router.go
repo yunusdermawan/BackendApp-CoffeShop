@@ -2,6 +2,7 @@ package routers
 
 import (
 	"gogin/internal/handlers"
+	"gogin/internal/middlewares"
 	"gogin/internal/repositories"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,7 @@ func product(g *gin.Engine, d *sqlx.DB) {
 	repo := repositories.NewProduct(d)
 	handler := handlers.NewProduct(repo)
 
-	route.POST("/", handler.CreateData)
+	route.POST("/", middlewares.AuthJwt("admin"), handler.CreateData)
 	route.GET("/all", handler.GetData)
 	route.GET("/", handler.GetByPage)
 	route.GET("/search", handler.SearchData)

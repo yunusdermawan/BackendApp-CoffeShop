@@ -133,6 +133,7 @@ func (r *RepoProduct) UpdateProduct(data *models.Product) (string, error) {
 		UPDATE public.product
 		SET
 			product_name=:product_name,
+			slug_product=:slug_product,
 			product_banner=:product_banner,
 			product_price=:product_price,
 			product_size=:product_size,

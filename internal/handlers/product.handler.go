@@ -3,6 +3,7 @@ package handlers
 import (
 	"gogin/internal/models"
 	"gogin/internal/repositories"
+	"gogin/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -54,8 +55,8 @@ func (h *HandlerProduct) GetData(ctx *gin.Context) {
 		return
 	}
 
-	// pkg.NewRes(200, data).Send(ctx)
-	ctx.JSON(200, data)
+	pkg.NewRes(200, data).Send(ctx)
+	// ctx.JSON(200, data)
 }
 
 func (h *HandlerProduct) SearchData(ctx *gin.Context) {
@@ -66,14 +67,14 @@ func (h *HandlerProduct) SearchData(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.SearchProduct(&search)
+	data, err := h.SearchProduct(&search)
 
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-
-	ctx.JSON(200, response)
+	pkg.NewRes(200, data).Send(ctx)
+	// ctx.JSON(200, response)
 }
 
 func (h *HandlerProduct) GetByPage(ctx *gin.Context) {
@@ -102,7 +103,7 @@ func (h *HandlerProduct) UpdateData(ctx *gin.Context) {
 		return
 	}
 
-	product.Slg_prod = ctx.Param("slug")
+	// product.Slg_prod = ctx.Param("slug")
 	response, err := h.UpdateProduct(&product)
 
 	if err != nil {

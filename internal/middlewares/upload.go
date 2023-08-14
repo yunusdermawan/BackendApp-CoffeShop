@@ -28,7 +28,7 @@ func UploadFile(ctx *gin.Context) {
 	}
 	defer src.Close()
 
-	result, err := pkg.CloudInary(src)
+	result, err := pkg.Cloudinary(src)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
 		return

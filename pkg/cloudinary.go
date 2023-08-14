@@ -7,7 +7,7 @@ import (
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
-func CloudInary(file interface{}) (string, error) {
+func Cloudinary(file interface{}) (string, error) {
 	name := "dsfrrcvrs"
 	key := "554933634147368"
 	secret := "dhVHQ_1QnUJ66EZvfEIHjZUI0jo"

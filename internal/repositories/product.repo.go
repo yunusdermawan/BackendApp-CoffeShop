@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"gogin/config"
 	"gogin/internal/models"
 	"gogin/static"
 	"strconv"
@@ -60,7 +61,7 @@ func (r *RepoProduct) DeleteProduct(data *models.Product) (map[string]interface{
 	return customStat, nil
 }
 
-func (r *RepoProduct) GetProduct() ([]models.Product, error) {
+func (r *RepoProduct) GetProduct() (*config.Result, error) {
 	// products := models.Product{}
 	var products []models.Product
 	q := `
@@ -74,11 +75,11 @@ func (r *RepoProduct) GetProduct() ([]models.Product, error) {
 		return nil, err
 	}
 
-	// return &config.Result{Data: products}, nil
-	return products, nil
+	return &config.Result{Data: products}, nil
+	// return products, nil
 }
 
-func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface{}, error) {
+func (r *RepoProduct) SearchProduct(search *models.Search) (*config.Result, error) {
 	var products []models.Product
 
 	q := `
@@ -95,8 +96,8 @@ func (r *RepoProduct) SearchProduct(search *models.Search) (map[string]interface
 		return nil, err
 	}
 
-	customStat := static.Response(200, "products")
-	return customStat, nil
+	return &config.Result{Data: products}, nil
+	// return products, nil
 }
 
 func (r *RepoProduct) GetProductByPage(page *models.Page) ([]models.Product, error) {

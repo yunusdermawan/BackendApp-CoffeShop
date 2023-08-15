@@ -1,0 +1,1 @@
+$ migrate -source file://path/to/migrations -database postgres://localhost:5433/database up 2

@@ -49,7 +49,7 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 
 	if err := pkg.VerifyPassword(users.User_password, data.User_password); err != nil {
 		pkg.NewRes(401, &config.Result{
-			Data: "Password salah",
+			Data: "Wrong password",
 		}).Send(ctx)
 		return
 	}
@@ -74,3 +74,7 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 	pkg.NewRes(200, &config.Result{Data: tokens}).Send(ctx)
 	// ctx.JSON(200, tokens)
 }
+
+// func (h *HandlerAuth) Logout(ctx *gin.Context) {
+// 	var data []
+// }

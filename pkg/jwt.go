@@ -17,8 +17,8 @@ func NewToken(uid, role string) *claims {
 		Id:   uid,
 		Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "backendgolang",
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 2)),
+			Issuer:    "coffeshop_backend",
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 15)),
 		},
 	}
 }

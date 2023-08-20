@@ -3,7 +3,6 @@ package repositories
 import (
 	"gogin/config"
 	"gogin/internal/models"
-	"gogin/static"
 	"strconv"
 
 	"github.com/jmoiron/sqlx"
@@ -48,17 +47,15 @@ func (r *RepoProduct) CreateProduct(data *models.Product) (string, error) {
 	return "1 data product created", nil
 }
 
-func (r *RepoProduct) DeleteProduct(data *models.Product) (map[string]interface{}, error) {
+func (r *RepoProduct) DeleteProduct(data *models.Product) (string, error) {
 	q := `DELETE FROM public.product WHERE slug_product = :slug_product;`
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	customStat := static.Response(200, "1 product deleted")
-
-	return customStat, nil
+	return "1 product deleted", nil
 }
 
 func (r *RepoProduct) GetProduct() (*config.Result, error) {

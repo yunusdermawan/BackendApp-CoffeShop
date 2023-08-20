@@ -3,7 +3,6 @@ package repositories
 import (
 	"errors"
 	"gogin/internal/models"
-	"gogin/static"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -40,17 +39,15 @@ func (r *RepoUser) CreateUser(data *models.User) (string, error) {
 	// return data.Role, nil
 }
 
-func (r *RepoUser) DeleteUser(data *models.User) (map[string]interface{}, error) {
+func (r *RepoUser) DeleteUser(data *models.User) (string, error) {
 	q := `DELETE FROM public.user WHERE id_user = :id_user;`
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	customStat := static.Response(200, "1 user deleted")
-
-	return customStat, nil
+	return "1 user deleted", nil
 }
 
 func (r *RepoUser) GetUser() ([]models.User, error) {
@@ -71,25 +68,24 @@ func (r *RepoUser) GetUser() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *RepoUser) SearchUser(search *models.Search) (map[string]interface{}, error) {
-	// var users []models.User
+func (r *RepoUser) SearchUser(search *models.Search) (models.Users, error) {
+	var users []models.User
 
-	// q := `
-	// 	SELECT *
-	// 	FROM public.user
-	// 	WHERE user_name LIKE $1
-	// 	AND first_name = $2;
-	// `
+	q := `
+		SELECT *
+		FROM public.user
+		WHERE user_name LIKE $1
+		AND first_name = $2;
+	`
 
-	// src := "%" + search.Prod_name + "%"
-	// typ := search.SortBy_Typ
-	// err := r.DB.Select(&users, q, src, typ)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	src := "%" + search.Prod_name + "%"
+	typ := search.SortBy_Typ
+	err := r.DB.Select(&users, q, src, typ)
+	if err != nil {
+		return nil, err
+	}
 
-	customStat := static.Response(200, "users")
-	return customStat, nil
+	return users, nil
 }
 
 func (r *RepoUser) UpdateUser(data *models.User) (string, error) {

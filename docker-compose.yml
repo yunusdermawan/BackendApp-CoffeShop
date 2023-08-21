@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  goback:
+    container_name: gotest
+    image: yunusdermawan/goapps
+    ports:
+      - '8004:8001'
+    networks:
+      - local_default
+    environment:
+      - DB_HOST: 'pglocal'
+
+networks:
+  local_default:
+    external: true

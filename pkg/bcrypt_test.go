@@ -12,8 +12,8 @@ var errors error
 
 func TestHashPassword(t *testing.T) {
 	hashedPassword, errors = HashPassword(password)
-	assert.NoError(t, errors, "error ketika sedang menghasing")
-	assert.NotEqual(t, password, hashedPassword, "password tidak terhasing")
+	assert.NoError(t, errors, "hashing error")
+	assert.NotEqual(t, password, hashedPassword, "password is not hashed")
 }
 
 func TestVerifyPassword(t *testing.T) {

@@ -1,15 +1,15 @@
 version: '3.9'
 services:
   goback:
-    container_name: gotest
+    container_name: gotest43
     image: yunusdermawan/goapps
     ports:
-      - '8004:8001'
+      - '80012:8002'
     networks:
-      - local_default
+      - docker-go
     environment:
-      - DB_HOST: 'pglocal'
+      - DB_HOST: 'postgres-container'
 
 networks:
-  local_default:
+  docker-go:
     external: true

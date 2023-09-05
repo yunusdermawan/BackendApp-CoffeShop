@@ -12,7 +12,7 @@ RUN go mod download
 RUN go build -v -o /goapp/goback ./cmd/main.go
 
 # Open port for app
-EXPOSE 8001
+EXPOSE 8002
 
 # Run app
 ENTRYPOINT [ "/goapp/goback" ]

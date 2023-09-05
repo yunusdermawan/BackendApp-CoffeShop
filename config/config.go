@@ -7,7 +7,7 @@ type Metas struct {
 }
 
 type Result struct {
-	Data    interface{}
-	Meta    interface{}
-	Message interface{}
+	Data    interface{} `json:"data, omitempty"`
+	Meta    interface{} `json:"meta, omitempty"`
+	Message interface{} `json:"message, omitempty"`
 }

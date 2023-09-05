@@ -2,11 +2,20 @@ package repositories
 
 import (
 	"errors"
+	"gogin/config"
 	"gogin/internal/models"
 
 	"github.com/jmoiron/sqlx"
 )
 
+type RepoUserIF interface {
+	CreateUser(data *models.User) (*config.Result, error)
+	DeleteUser(data *models.User) (*config.Result, error)
+	GetUser() (*config.Result, error)
+	SearchUser(search *models.Search) (*config.Result, error)
+	UpdateUser(data *models.User) (*config.Result, error)
+	GetAuthData(user string) (*models.User, error)
+}
 type RepoUser struct {
 	*sqlx.DB
 }
@@ -15,7 +24,7 @@ func NewUser(db *sqlx.DB) *RepoUser {
 	return &RepoUser{db}
 }
 
-func (r *RepoUser) CreateUser(data *models.User) (string, error) {
+func (r *RepoUser) CreateUser(data *models.User) (*config.Result, error) {
 	q := `
 		INSERT INTO public.user(
 			user_name,
@@ -32,25 +41,27 @@ func (r *RepoUser) CreateUser(data *models.User) (string, error) {
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return "1 data user added", nil
+	// return "1 data user added", nil
 	// return data.Role, nil
+	return &config.Result{Message: "1 data user added"}, nil
 }
 
-func (r *RepoUser) DeleteUser(data *models.User) (string, error) {
+func (r *RepoUser) DeleteUser(data *models.User) (*config.Result, error) {
 	q := `DELETE FROM public.user WHERE id_user = :id_user;`
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return "1 user deleted", nil
+	// return "1 user deleted", nil
+	return &config.Result{Message: "1 user deleted"}, nil
 }
 
-func (r *RepoUser) GetUser() ([]models.User, error) {
+func (r *RepoUser) GetUser() (*config.Result, error) {
 	// users := models.User{}
 	var users []models.User
 	q := `
@@ -64,11 +75,11 @@ func (r *RepoUser) GetUser() ([]models.User, error) {
 		return nil, err
 	}
 
-	// return &config.Result{Data: users}, nil
-	return users, nil
+	return &config.Result{Data: users}, nil
+	// return users, nil
 }
 
-func (r *RepoUser) SearchUser(search *models.Search) (models.Users, error) {
+func (r *RepoUser) SearchUser(search *models.Search) (*config.Result, error) {
 	var users []models.User
 
 	q := `
@@ -85,10 +96,11 @@ func (r *RepoUser) SearchUser(search *models.Search) (models.Users, error) {
 		return nil, err
 	}
 
-	return users, nil
+	// return users, nil
+	return &config.Result{Data: users}, nil
 }
 
-func (r *RepoUser) UpdateUser(data *models.User) (string, error) {
+func (r *RepoUser) UpdateUser(data *models.User) (*config.Result, error) {
 	q := `
 		UPDATE public.user
 		SET
@@ -108,10 +120,11 @@ func (r *RepoUser) UpdateUser(data *models.User) (string, error) {
 
 	_, err := r.NamedExec(q, data)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return "1 user updated", nil
+	// return "1 user updated", nil
+	return &config.Result{Message: "1 user updated"}, nil
 }
 
 func (r *RepoUser) GetAuthData(user string) (*models.User, error) {

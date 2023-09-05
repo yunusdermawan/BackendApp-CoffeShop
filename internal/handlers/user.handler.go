@@ -11,43 +11,54 @@ import (
 )
 
 type HandlerUser struct {
-	*repositories.RepoUser
+	repositories.RepoUserIF
 }
 
-func NewUser(r *repositories.RepoUser) *HandlerUser {
+// type HandlerUser struct {
+// 	*repositories.RepoUser
+// }
+
+func NewUser(r repositories.RepoUserIF) *HandlerUser {
 	return &HandlerUser{r}
 }
 
-func (h *HandlerUser) CreateData(ctx *gin.Context) {
-	var users models.User
+// func NewUser(r *repositories.RepoUser) *HandlerUser {
+// 	return &HandlerUser{r}
+// }
+
+func (h *HandlerUser) PostData(ctx *gin.Context) {
+	data := models.User{
+		Role: "user",
+	}
 	var ers error
 
-	if err := ctx.ShouldBind(&users); err != nil {
+	if err := ctx.ShouldBind(&data); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	//Payload validation
-	_, ers = govalidator.ValidateStruct(&users)
+	_, ers = govalidator.ValidateStruct(&data)
 	if ers != nil {
 		ctx.AbortWithError(http.StatusBadRequest, ers)
 		return
 	}
 
 	//Hash password
-	users.User_password, ers = pkg.HashPassword(users.User_password)
+	data.User_password, ers = pkg.HashPassword(data.User_password)
 	if ers != nil {
 		ctx.AbortWithError(http.StatusBadRequest, ers)
 		return
 	}
 
-	response, err := h.CreateUser(&users)
+	response, err := h.CreateUser(&data)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	ctx.JSON(200, response)
+	// ctx.JSON(200, response)
+	pkg.NewRes(200, response).Send(ctx)
 }
 
 func (h *HandlerUser) DeleteData(ctx *gin.Context) {
